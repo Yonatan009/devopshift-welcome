@@ -77,6 +77,21 @@ pipeline {
                 }
             }
         }
+        
+        stage('Parallel Tests') {
+            parallel {
+                stage('Test on Chrome') {
+                    steps {
+                        echo 'Testing VOLT on Chrome...'
+                    }
+                }
+                stage('Test on Firefox') {
+                    steps {
+                        echo 'Testing VOLT on Firefox...'
+                    }
+                }
+            }
+        }
 
         stage('Manual QA Approval') {
             steps {
@@ -104,21 +119,6 @@ pipeline {
                 dir("${PROJECT_HOME}") {
                     echo 'Archiving Flask log file...'
                     archiveArtifacts artifacts: 'flask_app.log', allowEmptyArchive: true
-                }
-            }
-        }
-
-        stage('Parallel Tests') {
-            parallel {
-                stage('Test on Chrome') {
-                    steps {
-                        echo 'Testing VOLT on Chrome...'
-                    }
-                }
-                stage('Test on Firefox') {
-                    steps {
-                        echo 'Testing VOLT on Firefox...'
-                    }
                 }
             }
         }
@@ -156,3 +156,4 @@ pipeline {
         }
     }
 }
+
