@@ -9,9 +9,9 @@ pipeline {
     }
 
     stages {
+
         stage('Clone Flask Project') {
             steps {
-                // Use the Git plugin to clone the repository
                 git branch: 'jenkins-workshop', url: 'https://github.com/yanivomc/devopshift-welcome.git'
             }
         }
@@ -82,7 +82,7 @@ pipeline {
             steps {
                 script {
                     def userInput = input message: 'Is the application running successfully? ',
-                                         parameters: [choice(name: 'Proceed', choices: 'Proceed\nAbort', description: 'use the URL: http://REMOTEIP:5001 and Choose an option')]
+                        parameters: [choice(name: 'Proceed', choices: 'Proceed\nAbort', description: 'use the URL: http://REMOTEIP:5001 and Choose an option')]
                     env.USER_CHOICE = userInput
                 }
             }
@@ -104,6 +104,21 @@ pipeline {
                 dir("${PROJECT_HOME}") {
                     echo 'Archiving Flask log file...'
                     archiveArtifacts artifacts: 'flask_app.log', allowEmptyArchive: true
+                }
+            }
+        }
+
+        stage('Parallel Tests') {
+            parallel {
+                stage('Test on Chrome') {
+                    steps {
+                        echo 'Testing VOLT on Chrome...'
+                    }
+                }
+                stage('Test on Firefox') {
+                    steps {
+                        echo 'Testing VOLT on Firefox...'
+                    }
                 }
             }
         }
@@ -141,4 +156,3 @@ pipeline {
         }
     }
 }
-
